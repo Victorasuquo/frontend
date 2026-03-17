@@ -145,16 +145,22 @@ export default function SeniorExecutivePage() {
           {top5.map((p) => {
             const pctV = pct(p.sav, p.pot)
             return (
-              <div className="pr" key={p.id}>
-                <div className={`rag rag-${p.rag}`} />
-                <div style={{ flex: 1 }}>
-                  <div className="pr-n">{p.nm}</div>
-                  <div className="pr-s">{findSubICBName(p.id)} · {p.pts.toLocaleString()} patients</div>
-                  <div style={{ height: 4, width: `${Math.min(pctV, 100)}%`, background: 'var(--ok)', borderRadius: 2, marginTop: 4 }} />
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div className="pr-v">{fm(p.sav)}</div>
-                  <div style={{ fontSize: 10, color: 'var(--muted)' }}>{pctV}% of potential</div>
+              <div className="prx" key={p.id}>
+                <div className="prx-row">
+                  <div className="prx-main">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div className={`rag rag-${p.rag}`} />
+                      <div className="prx-name">{p.nm}</div>
+                    </div>
+                    <div className="prx-sub">{findSubICBName(p.id)} · {p.pts.toLocaleString()} patients</div>
+                    <div className="prx-bar">
+                      <div className="prx-fill" style={{ width: `${Math.min(pctV, 100)}%`, background: 'var(--ok)' }} />
+                    </div>
+                  </div>
+                  <div className="prx-val">
+                    <div className="prx-money">{fm(p.sav)}</div>
+                    <div className="prx-pct">{pctV}% of potential</div>
+                  </div>
                 </div>
               </div>
             )
@@ -162,19 +168,25 @@ export default function SeniorExecutivePage() {
           <div style={{ padding: '.4rem 1.1rem', background: 'var(--bg)', borderBottom: '1px solid var(--border)', borderTop: '1px solid var(--border)', fontSize: 10, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em' }}>
             ↓ Bottom 5 — require support
           </div>
-          {bottom5.map(p => {
+          {bottom5.map((p) => {
             const pctV = pct(p.sav, p.pot)
             return (
-              <div className="pr" key={p.id}>
-                <div className={`rag rag-${p.rag}`} />
-                <div style={{ flex: 1 }}>
-                  <div className="pr-n">{p.nm}</div>
-                  <div className="pr-s">{findSubICBName(p.id)} · {p.pts.toLocaleString()} patients</div>
-                  <div style={{ height: 4, width: `${Math.min(pctV, 100)}%`, background: 'var(--re)', borderRadius: 2, marginTop: 4 }} />
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div className="pr-v">{fm(p.sav)}</div>
-                  <div style={{ fontSize: 10, color: 'var(--re)' }}>{pctV}% of potential</div>
+              <div className="prx" key={p.id}>
+                <div className="prx-row">
+                  <div className="prx-main">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div className={`rag rag-${p.rag}`} />
+                      <div className="prx-name">{p.nm}</div>
+                    </div>
+                    <div className="prx-sub">{findSubICBName(p.id)} · {p.pts.toLocaleString()} patients</div>
+                    <div className="prx-bar">
+                      <div className="prx-fill" style={{ width: `${Math.min(pctV, 100)}%`, background: 'var(--re)' }} />
+                    </div>
+                  </div>
+                  <div className="prx-val">
+                    <div className="prx-money">{fm(p.sav)}</div>
+                    <div className="prx-pct" style={{ color: 'var(--re)' }}>{pctV}% of potential</div>
+                  </div>
                 </div>
               </div>
             )
