@@ -47,8 +47,10 @@ export default function SLFinancialPage() {
         {/* Top 10 switches table */}
         <div className="card">
           <div className="ch">
-            <div className="ch-t">Top 10 switches by annual saving</div>
-            <div className="ch-s">Which switch saves the most — full ICB value · ranked</div>
+            <div>
+              <div className="ch-t">Top 10 switches by annual saving</div>
+              <div className="ch-s">Which switch saves the most — full ICB value · ranked</div>
+            </div>
           </div>
           <table className="tc">
             <thead>

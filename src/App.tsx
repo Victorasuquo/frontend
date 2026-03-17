@@ -7,7 +7,10 @@ import { AppShell } from './components/AppShell'
 import { PCNOverviewPage } from './pages/PCNOverviewPage'
 import { OpportunitiesPage } from './pages/OpportunitiesPage'
 import { PracticesPage } from './pages/PracticesPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
+import AISearchPage from './pages/AISearchPage'
+import FindOwnPage from './pages/FindOwnPage'
+import DocumentsPage from './pages/DocumentsPage'
+import SwitchLogPage from './pages/SwitchLogPage'
 import SeniorExecutivePage from './pages/SeniorExecutivePage'
 import SubICBPerformancePage from './pages/SubICBPerformancePage'
 import SLFinancialPage from './pages/SLFinancialPage'
@@ -69,13 +72,13 @@ function ProtectedShell() {
       case 'alerts':
         return <ICBAlertsPage />
       case 'ai-search':
-        return <PlaceholderPage title="AI patient search" description="Gemini-powered query flow will be wired in this next sprint slice." />
+        return <AISearchPage />
       case 'find-own':
-        return <PlaceholderPage title="Find my own" description="Free-text opportunity discovery integration is scaffolded." />
+        return <FindOwnPage />
       case 'documents':
-        return <PlaceholderPage title="Action sheets and letters" description="Document generation and preview wiring is in progress." />
+        return <DocumentsPage />
       case 'switch-log':
-        return <PlaceholderPage title="Switch log" description="Audit trail and EPD verification table is scaffolded." />
+        return <SwitchLogPage />
       default:
         return <PCNOverviewPage />
     }

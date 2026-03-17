@@ -1,141 +1,133 @@
-import { SL_DATA, fm } from '../data/slData'
+import { SL_DATA } from '../data/slData'
+
+function money(n: number): string {
+  return `£${n.toLocaleString()}`
+}
+
+function trendSvg(isUp: boolean) {
+  const color = isUp ? '#C0392B' : '#0B6E5B'
+  return (
+    <svg width="80" height="24" viewBox="0 0 80 24" fill="none">
+      <path d={isUp ? 'M2 20 L78 2' : 'M2 2 L78 20'} stroke={color} strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function actionFor(category: string): string {
+  if (category.includes('Dapagliflozin')) return 'Generic now available — switch from Forxiga brand urgently'
+  if (category.includes('Empagliflozin')) return 'Generic now available — switch from Jardiance brand'
+  if (category.includes('GLP-1')) return 'Monitor — high growth area, biosimilars expected 2026-27'
+  if (category.includes('Pregabalin')) return 'Review neuropathic pain indication only — gabapentin switch programme'
+  if (category.includes('Adalimumab')) return 'Continue biosimilar programme — target 85% biosimilar by Q4'
+  if (category.includes('Rivaroxaban') || category.includes('Apixaban')) return 'Continue conversion to generic where clinically appropriate'
+  return 'Monitor trend and review prescribing drivers'
+}
 
 export default function DrugExpenditurePage() {
   const d = SL_DATA
-  const sorted = [...d.expenditure].sort((a, b) => Math.abs(b.yoyChange) - Math.abs(a.yoyChange))
-  const totalSpend = d.expenditure.reduce((s, e) => s + e.currentYear, 0)
-  const totalPrev = d.expenditure.reduce((s, e) => s + e.prevYear, 0)
-  const totalChange = totalSpend - totalPrev
-  const risers = d.expenditure.filter(e => e.yoyChange > 0).length
-  const fallers = d.expenditure.filter(e => e.yoyChange < 0).length
+  const rows = [...d.expenditure].sort((a, b) => Math.abs(b.yoyChange) - Math.abs(a.yoyChange))
+
+  const highGrowth = rows.filter((e) => (e.prevYear > 0 ? ((e.currentYear - e.prevYear) / e.prevYear) * 100 : 0) > 30).length
+  const reduced = rows.filter((e) => e.currentYear < e.prevYear).length
+
+  const exportCsv = () => {
+    const csvRows = ['Drug Class,BNF,Spend 2023/24,Spend 2024/25,Change %,Driver,Action']
+    rows.forEach((e) => {
+      const pct = e.prevYear > 0 ? Math.round(((e.currentYear - e.prevYear) / e.prevYear) * 100) : 999
+      csvRows.push([
+        `"${e.category}"`,
+        e.bnfChapter,
+        `"${money(e.prevYear)}"`,
+        `"${money(e.currentYear)}"`,
+        pct === 999 ? 'NEW' : `${pct}%`,
+        `"${e.driver}"`,
+        `"${actionFor(e.category)}"`,
+      ].join(','))
+    })
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = 'SY_ICB_Drug_Expenditure.csv'
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
 
   return (
     <div className="pg">
       <div className="ph">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-          <span className="tag tag-blue">Year-on-year analysis</span>
-        </div>
-        <h1>Drug expenditure tracker</h1>
-        <p>Year-on-year spend comparison across the highest-value BNF categories — identifies unexpected budget pressures and efficiency gains</p>
+        <h1>Drug expenditure monitoring</h1>
+        <p>High-spend and high-growth drug classes · budget impact · unplanned expenditure alerts</p>
       </div>
 
-      {/* Metric cards */}
-      <div className="mets m4">
+      <div className="mets m3">
         <div className="mc">
-          <div className="mc-l">Total tracked spend (current yr)</div>
-          <div className="mc-v">{fm(totalSpend)}</div>
-          <div className="mc-s dn">Top 10 BNF categories</div>
+          <div className="mc-l">High-growth drug classes (&gt;30%)</div>
+          <div className="mc-v">{highGrowth}</div>
+          <div className="mc-s dn">Require budget review</div>
         </div>
         <div className="mc">
-          <div className="mc-l">YoY change</div>
-          <div className="mc-v" style={{ color: totalChange > 0 ? 'var(--re)' : 'var(--ok)' }}>
-            {totalChange > 0 ? '+' : ''}{fm(totalChange)}
-          </div>
-          <div className="mc-s dn">vs prior year</div>
+          <div className="mc-l">New high-cost drugs (this year)</div>
+          <div className="mc-v">2</div>
+          <div className="mc-s dn">Tezepelumab, inclisiran</div>
         </div>
         <div className="mc">
-          <div className="mc-l">Categories with cost increase</div>
-          <div className="mc-v" style={{ color: 'var(--re)' }}>{risers}</div>
-          <div className="mc-s dn">Require review</div>
-        </div>
-        <div className="mc">
-          <div className="mc-l">Categories with cost reduction</div>
-          <div className="mc-v" style={{ color: 'var(--ok)' }}>{fallers}</div>
-          <div className="mc-s nu">Efficiencies delivered</div>
+          <div className="mc-l">Drugs successfully reduced</div>
+          <div className="mc-v">{reduced}</div>
+          <div className="mc-s up">Switch programmes working</div>
         </div>
       </div>
 
-      {/* Expenditure table */}
-      <div className="card" style={{ marginBottom: '1.1rem' }}>
+      <div className="card">
         <div className="ch">
-          <div className="ch-t">Year-on-year drug expenditure</div>
-          <div className="ch-s">Sorted by absolute year-on-year change</div>
+          <div>
+            <div className="ch-t">Drug expenditure tracker — high-spend BNF lines</div>
+            <div className="ch-s">Year-on-year spend change · 2023/24 vs 2024/25 · actions and alerts</div>
+          </div>
+          <button className="btn bs bsm" onClick={exportCsv}>Export CSV</button>
         </div>
         <table className="tc">
           <thead>
             <tr>
-              <th>BNF category</th>
-              <th>Prior year (2023–24)</th>
-              <th>Current year (2024–25)</th>
-              <th>Change (£)</th>
-              <th>Change (%)</th>
+              <th>Drug class</th>
+              <th>BNF</th>
+              <th>Spend 23/24</th>
+              <th>Spend 24/25</th>
+              <th>Change</th>
               <th>Trend</th>
               <th>Driver</th>
-              <th>Action</th>
+              <th>Action / status</th>
             </tr>
           </thead>
           <tbody>
-            {sorted.map(e => {
-              const pctChange = Math.round(e.yoyChange / e.prevYear * 100)
-              const isIncrease = e.yoyChange > 0
+            {rows.map((e) => {
+              const pct = e.prevYear > 0 ? Math.round(((e.currentYear - e.prevYear) / e.prevYear) * 100) : 999
+              const isUp = pct === 999 || pct > 0
+              const col = pct === 999 || pct > 50 ? 'var(--re)' : pct > 20 ? 'var(--am)' : pct < 0 ? 'var(--ok)' : 'var(--muted)'
+              const barW = pct === 999 ? 80 : (Math.min(Math.abs(pct), 150) / 150) * 80
+              const action = actionFor(e.category)
+              const actionColor = action.includes('urgently') || action.includes('immediately') ? 'var(--re)' : action.includes('Continue') ? 'var(--ok)' : 'var(--mid)'
+
               return (
                 <tr key={e.category}>
+                  <td><div style={{ fontWeight: 700, fontSize: 12.5 }}>{e.category}</div></td>
+                  <td style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--muted)' }}>{e.bnfChapter}</td>
+                  <td style={{ fontFamily: 'var(--mono)', fontSize: 11.5 }}>{money(e.prevYear)}</td>
+                  <td style={{ fontFamily: 'var(--mono)', fontSize: 11.5, fontWeight: 700 }}>{money(e.currentYear)}</td>
                   <td>
-                    <div style={{ fontWeight: 700, fontSize: 12 }}>{e.category}</div>
-                    <div style={{ fontSize: 10, color: 'var(--muted)', fontFamily: 'var(--mono)' }}>{e.bnfChapter}</div>
-                  </td>
-                  <td style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>{fm(e.prevYear)}</td>
-                  <td style={{ fontFamily: 'var(--mono)', fontSize: 12, fontWeight: 700 }}>{fm(e.currentYear)}</td>
-                  <td style={{ fontFamily: 'var(--mono)', fontWeight: 800, color: isIncrease ? 'var(--re)' : 'var(--ok)' }}>
-                    {isIncrease ? '+' : ''}{fm(e.yoyChange)}
-                  </td>
-                  <td>
-                    <span style={{
-                      fontSize: 12, fontWeight: 800,
-                      color: isIncrease ? 'var(--re)' : 'var(--ok)'
-                    }}>
-                      {isIncrease ? '▲' : '▼'} {Math.abs(pctChange)}%
-                    </span>
-                  </td>
-                  <td>
-                    {/* Mini bar */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      {e.monthlyTrend.slice(-6).map((v, i) => {
-                        const prev = e.monthlyTrend[e.monthlyTrend.length - 7 + i] ?? v
-                        const isUp = v >= prev
-                        return (
-                          <div key={i} style={{ width: 5, height: Math.max(6, Math.round(v / Math.max(...e.monthlyTrend) * 24)), background: isUp ? 'var(--re)' : 'var(--ok)', borderRadius: 2 }} />
-                        )
-                      })}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{ width: `${barW}px`, height: 6, background: col, borderRadius: 3, opacity: 0.8 }} />
+                      <span style={{ fontSize: 12, fontWeight: 800, color: col }}>{pct === 999 ? 'NEW' : `${isUp ? '+' : ''}${pct}%`}</span>
                     </div>
                   </td>
-                  <td style={{ fontSize: 11, color: 'var(--mid)', maxWidth: 140 }}>{e.driver}</td>
-                  <td>
-                    <button className="btn bs bsm" onClick={() => alert(`Drill-down for ${e.category}`)}>Detail</button>
-                  </td>
+                  <td>{trendSvg(isUp)}</td>
+                  <td style={{ fontSize: 11, color: 'var(--mid)', maxWidth: 180, lineHeight: 1.5 }}>{e.driver}</td>
+                  <td style={{ fontSize: 11, color: actionColor, lineHeight: 1.5 }}>{action}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
-      </div>
-
-      {/* Waterfall chart — spend movers */}
-      <div className="card">
-        <div className="ch">
-          <div className="ch-t">Spend movement — top drivers</div>
-          <div className="ch-s">Largest contributors to YoY spend change</div>
-        </div>
-        <div style={{ padding: '1rem 1.25rem' }}>
-          {sorted.slice(0, 6).map(e => {
-            const maxAbs = Math.max(...sorted.map(x => Math.abs(x.yoyChange)))
-            const barWidth = Math.round(Math.abs(e.yoyChange) / maxAbs * 100)
-            const isInc = e.yoyChange > 0
-            return (
-              <div key={e.category} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                <div style={{ width: 160, fontSize: 11.5, fontWeight: 600, color: 'var(--slate)', textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {e.category}
-                </div>
-                <div style={{ flex: 1, height: 22, background: 'var(--border)', borderRadius: 4, overflow: 'hidden' }}>
-                  <div style={{ width: `${barWidth}%`, height: '100%', background: isInc ? 'var(--re)' : 'var(--ok)', borderRadius: 4 }} />
-                </div>
-                <div style={{ width: 90, fontFamily: 'var(--mono)', fontSize: 12, fontWeight: 700, color: isInc ? 'var(--re)' : 'var(--ok)', textAlign: 'right' }}>
-                  {isInc ? '+' : ''}{fm(e.yoyChange)}
-                </div>
-              </div>
-            )
-          })}
-        </div>
       </div>
     </div>
   )

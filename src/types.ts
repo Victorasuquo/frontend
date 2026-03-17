@@ -60,3 +60,57 @@ export interface PracticesResponse {
   page_size: number
   items: PracticeItem[]
 }
+
+export interface ClinicalQueryResponse {
+  query_text: string
+  target_system: string
+  emis_query: string
+  systmone_query: string
+  inclusion_criteria: string[]
+  exclusion_criteria: string[]
+  safety_notes: string[]
+}
+
+export interface OpportunityIdea {
+  title: string
+  rationale: string
+  current_drug?: string | null
+  target_drug?: string | null
+  estimated_annual_savings: number
+  affected_patients: number
+  bnf_codes: string[]
+  exclusions: string[]
+}
+
+export interface FindOpportunitiesResponse {
+  query_text: string
+  opportunities: OpportunityIdea[]
+}
+
+export interface GeneratedDocumentResponse {
+  document_id: string
+  document_type: string
+  title: string
+  content: string
+  generated_at: string
+}
+
+export interface InterventionItem {
+  id: string
+  name: string
+  therapeutic_area?: string | null
+  workstream_code?: string | null
+  current_drug: string
+  target_drug: string
+  status: string
+  forecast_annual_savings?: number | null
+  realized_savings: number
+  total_eligible_patients: number
+  patients_switched: number
+}
+
+export interface SavingsSummaryResponse {
+  ytd_total: number
+  total_forecast: number
+  by_workstream: Record<string, number>
+}

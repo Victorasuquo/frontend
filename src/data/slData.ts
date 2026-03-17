@@ -76,13 +76,16 @@ export interface ExpenditureEntry {
 }
 
 export interface ImplementedSwitch {
-  drug: string
-  switchType: string
-  subicb: string
-  implementedDate: string
-  expectedSaving: number
+  switch: string
+  date: string
+  subICB: string
+  practices: number
+  patientsSwitched: number
+  targetSaving: number
   actualSaving: number
-  epdStatus: 'Verified' | 'Partial' | 'In progress'
+  variance: number | null
+  status: 'verified' | 'partial' | 'in-progress'
+  epd: string
 }
 
 export interface MonthlyTrend {
@@ -298,14 +301,14 @@ export const SL_DATA: {
   ],
 
   implementedSwitches: [
-    { drug: 'Simvastatin → Atorvastatin generic', switchType: 'Ghost generic elimination', subicb: 'Sheffield', implementedDate: 'Sep 2024', expectedSaving: 98400, actualSaving: 92800, epdStatus: 'Verified' },
-    { drug: 'Omeprazole liquid → capsule', switchType: 'Formulation switch', subicb: 'Barnsley', implementedDate: 'Oct 2024', expectedSaving: 54600, actualSaving: 51200, epdStatus: 'Verified' },
-    { drug: 'Metformin MR → standard tablet', switchType: 'Formulation switch', subicb: 'Doncaster', implementedDate: 'Nov 2024', expectedSaving: 41600, actualSaving: 38400, epdStatus: 'Verified' },
-    { drug: 'Apixaban Eliquis → generic', switchType: 'Ghost generic elimination', subicb: 'Rotherham', implementedDate: 'Dec 2024', expectedSaving: 74800, actualSaving: 71200, epdStatus: 'Verified' },
-    { drug: 'Lansoprazole → omeprazole', switchType: 'Therapeutic switch', subicb: 'All', implementedDate: 'Jan 2025', expectedSaving: 88200, actualSaving: 84600, epdStatus: 'Verified' },
-    { drug: 'Seretide 250 → generic MDI', switchType: 'Ghost generic elimination', subicb: 'Sheffield', implementedDate: 'Feb 2025', expectedSaving: 154800, actualSaving: 142400, epdStatus: 'Partial' },
-    { drug: 'Atorvastatin Lipitor → generic', switchType: 'Ghost generic elimination', subicb: 'All', implementedDate: 'Mar 2025', expectedSaving: 228400, actualSaving: 214800, epdStatus: 'Verified' },
-    { drug: 'Bisoprolol brand → generic', switchType: 'Ghost generic elimination', subicb: 'Doncaster', implementedDate: 'Jun 2025', expectedSaving: 38200, actualSaving: 0, epdStatus: 'In progress' },
+    { switch: 'Simvastatin → Atorvastatin generic', date: 'Sep 2024', subICB: 'Sheffield', practices: 8, patientsSwitched: 1840, targetSaving: 98400, actualSaving: 92800, variance: -5.7, status: 'verified', epd: 'Verified in Oct 2024 EPD — dispensing of simvastatin fell 84%' },
+    { switch: 'Omeprazole liquid → capsule', date: 'Oct 2024', subICB: 'Barnsley', practices: 6, patientsSwitched: 420, targetSaving: 54600, actualSaving: 51200, variance: -6.2, status: 'verified', epd: 'Verified in Nov 2024 EPD — liquid items reduced 78%' },
+    { switch: 'Metformin MR → standard tablet', date: 'Nov 2024', subICB: 'Doncaster', practices: 7, patientsSwitched: 680, targetSaving: 41600, actualSaving: 38400, variance: -7.7, status: 'verified', epd: 'Verified in Dec 2024 EPD — MR items reduced 71%' },
+    { switch: 'Apixaban Eliquis → generic', date: 'Dec 2024', subICB: 'Rotherham', practices: 5, patientsSwitched: 340, targetSaving: 74800, actualSaving: 71200, variance: -4.8, status: 'verified', epd: 'Verified in Jan 2025 EPD — Eliquis items reduced 82%' },
+    { switch: 'Lansoprazole → omeprazole', date: 'Jan 2025', subICB: 'All', practices: 32, patientsSwitched: 2840, targetSaving: 88200, actualSaving: 84600, variance: -4.1, status: 'verified', epd: 'Verified in Feb 2025 EPD — lansoprazole items reduced 76%' },
+    { switch: 'Seretide 250 → generic MDI', date: 'Feb 2025', subICB: 'Sheffield', practices: 9, patientsSwitched: 1240, targetSaving: 154800, actualSaving: 142400, variance: -8.0, status: 'partial', epd: 'Feb 2025 EPD shows 68% reduction — 32% still on brand, follow-up needed' },
+    { switch: 'Atorvastatin Lipitor → generic', date: 'Mar 2025', subICB: 'All', practices: 38, patientsSwitched: 4820, targetSaving: 228400, actualSaving: 214800, variance: -6.0, status: 'verified', epd: 'Verified in Apr 2025 EPD — Lipitor items reduced 88%' },
+    { switch: 'Bisoprolol brand → generic', date: 'Jun 2025', subICB: 'Doncaster', practices: 6, patientsSwitched: 980, targetSaving: 38200, actualSaving: 0, variance: null, status: 'in-progress', epd: 'Switch logged — EPD verification pending (Jul 2025 data not yet published)' },
   ],
 
   monthlyTrend: [

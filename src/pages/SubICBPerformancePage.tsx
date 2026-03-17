@@ -61,6 +61,7 @@ function SubICBBlock({ subICB }: { subICB: SubICB }) {
             <th>PPU index</th>
             <th>Monthly trend</th>
             <th>vs avg</th>
+            <th />
           </tr>
         </thead>
         <tbody>
@@ -108,6 +109,9 @@ function SubICBBlock({ subICB }: { subICB: SubICB }) {
                   <span style={{ fontSize: 11, fontWeight: 800, color: vsAvg >= 0 ? 'var(--ok)' : 'var(--re)' }}>
                     {vsAvg >= 0 ? '+' : ''}{vsAvg}pp
                   </span>
+                </td>
+                <td>
+                  <button className="btn bs bsm" onClick={() => alert(`Practice detail: ${p.nm}`)}>Detail</button>
                 </td>
               </tr>
             )
