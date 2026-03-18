@@ -33,9 +33,14 @@ export interface Opportunity {
   patients_affected: number
   status: string
   org_level: string
+  practice_ods_code?: string | null
+  pcn_ods_code?: string | null
+  sub_icb_ods_code?: string | null
   therapeutic_area?: string | null
   effort_reward_score?: number | null
   priority_rank?: number | null
+  current_expensive_bnf?: string | null
+  target_cheap_bnf?: string | null
 }
 
 export interface OpportunityListResponse {
