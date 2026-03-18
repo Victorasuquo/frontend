@@ -70,7 +70,7 @@ export function OpportunitiesPage() {
 
       <div className="mets m4">
         <div className="mc"><div className="mc-l">Total opportunities</div><div className="mc-v">{opportunities.length}</div><div className="mc-s nu">all BNF chapters</div></div>
-        <div className="mc"><div className="mc-l">Total annual saving</div><div className="mc-v">£{Math.round(total / 1000)}k</div><div className="mc-s nu">if all actioned</div></div>
+        <div className="mc"><div className="mc-l">Total annual saving</div><div className="mc-v">£{Math.round(total).toLocaleString()}</div><div className="mc-s nu">if all actioned</div></div>
         <div className="mc"><div className="mc-l">ICB scheme opportunities</div><div className="mc-v">{included}</div><div className="mc-s up">Selected by ICB pharmacist</div></div>
         <div className="mc"><div className="mc-l">YTD saving (verified)</div><div className="mc-v">£{Math.round(summary?.realized_savings_ytd ?? 0).toLocaleString()}</div><div className="mc-s up">live dashboard summary</div></div>
       </div>
