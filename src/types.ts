@@ -85,6 +85,9 @@ export interface OpportunityIdea {
   affected_patients: number
   bnf_codes: string[]
   exclusions: string[]
+  evidence_summary?: string | null
+  confidence_score?: number | null
+  citations?: string[]
 }
 
 export interface FindOpportunitiesResponse {
